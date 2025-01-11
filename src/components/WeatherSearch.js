@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
+import LoadingSpinner from './LoadingSpinner';
 import ErrorMessage from './ErrorMessage';
 
 function WeatherSearch({ setWeatherData, setRecentSearches, recentSearches }) {
   const [city, setCity] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchWeather = async (searchCity) => {
     const apiKey = 'YOUR_API_KEY';
     try {
+      setIsLoading(true);
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${searchCity}&appid=${apiKey}&units=metric`
       );
@@ -18,12 +21,18 @@ function WeatherSearch({ setWeatherData, setRecentSearches, recentSearches }) {
       setRecentSearches([searchCity, ...recentSearches.slice(0, 4)]);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (city) fetchWeather(city);
+    if (!city) {
+      setError('Please enter a valid city name.');
+      return;
+    }
+    fetchWeather(city);
   };
 
   return (
@@ -37,6 +46,7 @@ function WeatherSearch({ setWeatherData, setRecentSearches, recentSearches }) {
         />
         <button type="submit">Search</button>
       </form>
+      {isLoading && <LoadingSpinner />}
       <ErrorMessage message={error} />
     </div>
   );
