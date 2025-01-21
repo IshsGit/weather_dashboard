@@ -4,6 +4,8 @@ import WeatherSearch from './components/WeatherSearch';
 import WeatherDisplay from './components/WeatherDisplay';
 import WeatherDetails from './components/WeatherDetails';
 import RecentSearches from './components/RecentSearches';
+import Footer from './components/Footer';
+import ErrorBoundary from './components/ErrorBoundary';
 import './styles.css';
 
 function App() {
@@ -19,7 +21,7 @@ function App() {
   };
 
   return (
-    <div>
+    <ErrorBoundary>
       <Header />
       <div className="container">
         <WeatherSearch
@@ -35,7 +37,8 @@ function App() {
         )}
         <RecentSearches searches={recentSearches} onSelect={handleRecentSearch} />
       </div>
-    </div>
+      <Footer />
+    </ErrorBoundary>
   );
 }
 
